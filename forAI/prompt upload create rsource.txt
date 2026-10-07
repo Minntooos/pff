@@ -1,0 +1,1 @@
+okay now in the dashboard home , under the cards where the document resources are, lets make the upload-card functional with drag and drop or clicking to import  any file, after uploading go to the resources create page view, with the file uploaded paramater ( it will show on top of the resource form)

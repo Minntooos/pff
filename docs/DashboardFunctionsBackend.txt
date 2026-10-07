@@ -1,0 +1,26 @@
+Dashboard:
+	show stats in the top cards how many resources, categories, tags 		and the recent activities
+
+	create resource 
+
+	iterate through all resources and show them in dashboard main
+
+	can view different types of resource by themselves in different 		tabs
+
+	can filter by category or document type or keyword
+
+	can drag file to upload then create resource page shows to make 		modifcations and add tags
+	
+	can customize or add a new resource type tab
+
+
+
+
+
+
+
+
+
+
+
+

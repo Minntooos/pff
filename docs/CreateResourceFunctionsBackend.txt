@@ -1,0 +1,3 @@
+create Resource:
+	
+	add to resources table: title, url, Description,category_id, 	user_id, Type, Tags, Image, Visibility

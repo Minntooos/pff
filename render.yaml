@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: pff
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /up
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: pff-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: pff-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: pff-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: pff-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: pff-db
+          property: password
+      - key: HF_API_KEY
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: pff-db
+    plan: free
+    databaseName: pff
+    user: pff

@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    container_name: pff-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_DATABASE: pff
+      DB_USERNAME: pff
+      DB_PASSWORD: pff
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: pff-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pff
+      POSTGRES_USER: pff
+      POSTGRES_PASSWORD: pff
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pff -d pff"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -1,0 +1,296 @@
+<x-app-layout>
+    <html><head><title>TrackSave - Create New Resource</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          }
+          body {
+            background-color: #f0f2f5;
+            color: #333;
+          }
+   
+          .user-info {
+            color: white;
+          }
+          .main-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+          }
+          h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+          }
+          .form-group {
+            margin-bottom: 1.5rem;
+          }
+          label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+          }
+          input[type="text"],
+          textarea,
+          select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+          }
+          textarea {
+            height: 100px;
+            resize: vertical;
+          }
+          .image-option {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+          }
+          .image-option label {
+            font-weight: normal;
+          }
+          #ai-prompt {
+            display: none;
+          }
+          .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+          }
+          .btn:hover {
+            background-color: #2980b9;
+          }
+          .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+          }
+          .tag {
+            background-color: #ecf0f1;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+          }
+          .tag-remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+          }
+          #new-tag {
+            flex-grow: 1;
+            min-width: 100px;
+          }
+          .upload-card {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+          }
+          .upload-card:hover {
+            border-color: #2980b9;
+            background-color: #f7f9fa;
+          }
+          .upload-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+          }
+          .file-input {
+            display: none;
+          }
+          .file-label {
+            cursor: pointer;
+            color: #3498db;
+            text-decoration: underline;
+          }
+          .preview-container {
+            margin-top: 1rem;
+          }
+          .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+          }
+        </style>
+      </head>
+      <body>
+      
+      
+        <main class="main-content">
+          <h1>Create New Resource</h1>
+          <form id="create-resource-form">
+            <div class="form-group">
+              <label for="resource-title">Title</label>
+              <input type="text" id="resource-title" name="title" required>
+            </div>
+      
+            <div class="form-group">
+              <label for="resource-description">Description</label>
+              <textarea id="resource-description" name="description" required></textarea>
+            </div>
+      
+            <div class="form-group">
+              <label for="resource-type">Resource Type</label>
+              <select id="resource-type" name="type" required>
+                <option value="">Select a type</option>
+                <option value="document">Document</option>
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+                <option value="audio">Audio</option>
+              </select>
+            </div>
+      
+            <div class="form-group">
+              <label>Tags</label>
+              <div class="tag-input">
+                <input type="text" id="new-tag" placeholder="Add a tag">
+              </div>
+            </div>
+      
+            <div class="form-group">
+              <label>Resource Image</label>
+              <div class="image-option">
+                <input type="radio" id="ai-generated" name="image-source" value="ai">
+                <label for="ai-generated">AI-generated</label>
+              </div>
+              <div class="image-option">
+                <input type="radio" id="user-upload" name="image-source" value="upload" checked>
+                <label for="user-upload">Upload image</label>
+              </div>
+              <textarea id="ai-prompt" placeholder="Describe the image you want to generate..."></textarea>
+              <div class="upload-card" id="upload-card">
+                <div class="upload-icon">&#128228;</div>
+                <p>Drag and drop your image here, or <label for="file-upload" class="file-label">browse</label></p>
+                <input type="file" id="file-upload" class="file-input" accept="image/*">
+              </div>
+            </div>
+      
+            <div class="preview-container">
+              <img id="preview-image" class="preview-image" alt="Image preview" style="display: none;">
+            </div>
+      
+            <button type="submit" class="btn" style="margin-top: 1rem;">Create Resource</button>
+          </form>
+        </main>
+      
+        <script>
+          const form = document.getElementById('create-resource-form');
+          const aiPrompt = document.getElementById('ai-prompt');
+          const fileUpload = document.getElementById('file-upload');
+          const imageSourceRadios = document.getElementsByName('image-source');
+          const tagInput = document.querySelector('.tag-input');
+          const newTagInput = document.getElementById('new-tag');
+          const previewImage = document.getElementById('preview-image');
+          const uploadCard = document.getElementById('upload-card');
+      
+          // Handle image source selection
+          imageSourceRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+              if (e.target.value === 'ai') {
+                aiPrompt.style.display = 'block';
+                uploadCard.style.display = 'none';
+              } else {
+                aiPrompt.style.display = 'none';
+                uploadCard.style.display = 'block';
+              }
+            });
+          });
+      
+          // Handle tag input
+          newTagInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+              e.preventDefault();
+              const tagText = newTagInput.value.trim();
+              if (tagText) {
+                addTag(tagText);
+                newTagInput.value = '';
+              }
+            }
+          });
+      
+          function addTag(text) {
+            const tag = document.createElement('span');
+            tag.classList.add('tag');
+            tag.textContent = text;
+            const removeBtn = document.createElement('span');
+            removeBtn.classList.add('tag-remove');
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', () => tag.remove());
+            tag.appendChild(removeBtn);
+            tagInput.insertBefore(tag, newTagInput);
+          }
+      
+          // Handle file upload and preview
+          fileUpload.addEventListener('change', handleFileSelect);
+          uploadCard.addEventListener('dragover', handleDragOver);
+          uploadCard.addEventListener('drop', handleDrop);
+      
+          function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+              displayPreview(file);
+            }
+          }
+      
+          function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadCard.style.borderColor = '#2980b9';
+          }
+      
+          function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            uploadCard.style.borderColor = '#3498db';
+            const file = event.dataTransfer.files[0];
+            if (file) {
+              displayPreview(file);
+            }
+          }
+      
+          function displayPreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewImage.src = e.target.result;
+              previewImage.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+          }
+      
+          // Handle form submission
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const tags = Array.from(tagInput.querySelectorAll('.tag')).map(tag => tag.textContent.slice(0, -1));
+            formData.append('tags', JSON.stringify(tags));
+      
+            // Here you would typically send the formData to your server
+            console.log('Form submitted with the following data:');
+            for (let [key, value] of formData.entries()) {
+              console.log(`${key}: ${value}`);
+            }
+      
+            // For demonstration purposes, we'll show an alert
+            alert('Resource created successfully!');
+          });
+        </script>
+      </body></html>
+</x-app-layout>
